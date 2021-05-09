@@ -1,6 +1,13 @@
 ## Leetcode 刷题记录
 
 [TOC]
+- [Leetcode 刷题记录](#leetcode-刷题记录)
+  - [no. Template](#no-template)
+  - [2. Add Two Numbers](#2-add-two-numbers)
+  - [92. Reverse Linked List II](#92-reverse-linked-list-ii)
+  - [223. Rectangle Area](#223-rectangle-area)
+  - [274. H-Index](#274-h-index)
+  - [328. Odd Even Linked List](#328-odd-even-linked-list)
 
 ### no. Template
 题目来源：[leetcode]()
@@ -19,6 +26,63 @@
 class Solution:
     def solve(self):
         return None
+```
+</details>
+
+### 2. Add Two Numbers
+题目来源：[leetcode](https://leetcode.com/problems/add-two-numbers/)
+
+> 题目简述：用链表表示一个正整数，头节点为最低位，尾节点为最高位，计算两个正整数的和并以链表表示
+
+解题思路：
+- 将链表转为整数并求和
+- 将整数转为链表
+
+> 备注：本题应该可以直接计算，不用转成整数，本解法并不高效
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+def traverse_list(ls):
+    # 把链表转为正整数
+    ret = ls.val
+    current = ls.next
+    i = 1
+    while current is not None:
+        ret += current.val * 10 ** i
+        current = current.next
+        i += 1
+    return ret
+
+
+def construct_list(ls):
+    # 给定正整数的各位数字列表，构造链表
+    ret = ListNode(ls[0], None)
+    for i in range(1, len(ls)):
+        ret = ListNode(ls[i], ret)
+    return ret
+
+
+class Solution:
+    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
+        # 把链表转为正整数
+        a = traverse_list(l1)
+        b = traverse_list(l2)
+        # 求和并将和转为字符串
+        c = str(a + b)
+        # 把字符串转为数字列表
+        l3 = list(map(int, c))
+        # 根据数字列表构造链表
+        l3 = construct_list(l3)
+        return l3
 ```
 </details>
 
@@ -120,6 +184,49 @@ class Solution:
         width = max(min(C, G) - max(A, E), 0)
         height = max(min(D, H) - max(B, F), 0)
         return (D - B) * (C - A) + (H - F) * (G - E) - width * height
+```
+</details>
+
+### 274. H-Index
+题目来源：[leetcode](https://leetcode.com/problems/h-index/)
+
+> 题目简述：给定一名作者全部论文的引用数量列表，计算其 h-index，即有 n 篇文章的引用数量不少于 n，n 取最大。
+
+解题思路：
+- 统计所有可能的引用次数（升序排列） [h_1, ..., h_k] 及引用数不低于该次数的文章数量（降序排列） [c_1, ..., c_k]
+- 若存在某个 i 使得 h_i <= c_i，且 h_{i+1} > c_{i+1}，则 c_i 为 h-index 的一个上界，最接近该上界的为 h_i 和 c_{i+1}，h-index 为其中的较大者，即 h-index = max(h_i, c_{i+1})。
+
+> 备注：本题方法需要统计不同引用数出现的次数，比较耗时，尤其是当论文列表比较长时。
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+import numpy as np
+
+
+class Solution:
+    def hIndex(self, citations: List[int]) -> int:
+        # 统计所有可能的引用数及其出现的次数
+        values, counts = np.unique(citations, return_counts=True)
+        all_counts = sum(counts)
+        min_val = min(values)
+        # 边界条件：若文章少，但引用量多，出现最低引用量超过论文总量的情况，则 h-index 等于论文总数
+        if min_val >= all_counts:
+            return all_counts
+        else:
+            # 计算引用数不少于某个次数的论文总数
+            cumsums = np.cumsum(counts[::-1])[::-1]
+            h = 0
+            for v, c in zip(values, cumsums):
+                if c >= v:
+                    h = v
+                else:
+                    h = max(c, h)
+                    break
+            return h
 ```
 </details>
 
