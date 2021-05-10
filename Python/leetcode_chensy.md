@@ -5,6 +5,7 @@
   - [no. Template](#no-template)
   - [2. Add Two Numbers](#2-add-two-numbers)
   - [92. Reverse Linked List II](#92-reverse-linked-list-ii)
+  - [143. Reorder List](#143-reorder-list)
   - [223. Rectangle Area](#223-rectangle-area)
   - [274. H-Index](#274-h-index)
   - [328. Odd Even Linked List](#328-odd-even-linked-list)
@@ -160,6 +161,52 @@ class Solution:
             reverse_list(ls)
             ls[0].next = None
             return ls[-1]
+```
+</details>
+
+### 143. Reorder List
+题目来源：[leetcode](https://leetcode.com/problems/reorder-list/)
+
+> 题目简述：把链表 L_0 -> L_1 -> ... -> L_{n-1} -> L_n 重排为 L_0 -> L_n -> L1 -> L_{n-1} -> ...
+
+解题思路：用列表（数组）存储链表节点，按下标重排
+
+> 本解法需要额外空间存储链表以方便下标索引，不知道是否有更节省空间但不增加时间开销的做法。
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reorderList(self, head: ListNode) -> None:
+        """
+        Do not return anything, modify head in-place instead.
+        """
+        if head is not None:
+            ls = []
+            current = head
+            # 把链表的节点存入一个列表
+            while current is not None:
+                ls.append(current)
+                current = current.next
+            size = len(ls)
+            quotient, remainder = size // 2, size % 2
+            # 当 i < (n+1)//2 - 1，L_i -> L_{n-i}, L_{n-i} -> L_{i+1}
+            for i in range(quotient - 1):
+                ls[i].next = ls[-1 - i]
+                ls[-1 - i].next = ls[i + 1]
+            # 若中间剩下 3 个节点 L_{i-1}, L_{i}, L_{i+1}，则 L_{i-1} -> L_{i+1} -> L_i -> None
+            if remainder == 1 and (quotient > 0):
+                ls[quotient - 1].next = ls[quotient + 1]
+                ls[quotient + 1].next = ls[quotient]
+            ls[quotient].next = None
 ```
 </details>
 
