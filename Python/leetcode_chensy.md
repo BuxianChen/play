@@ -9,7 +9,7 @@
   - [223. Rectangle Area](#223-rectangle-area)
   - [274. H-Index](#274-h-index)
   - [328. Odd Even Linked List](#328-odd-even-linked-list)
-  - [no. 725](#no-725)
+  - [no. 725 Split Linked List in Parts](#no-725-split-linked-list-in-parts)
 
 ### no. Template
 题目来源：[leetcode]()
@@ -327,7 +327,7 @@ class Solution:
 ```
 </details>
 
-### no. 725
+### no. 725 Split Linked List in Parts
 题目来源：[leetcode](https://leetcode.com/problems/split-linked-list-in-parts/)
 
 > 题目简述：将一个链表按顺序分成 k 个子链表，链表长度相差不超过 1，后一个链表的长度不大于前一个链表的长度，不足则用空链表补齐。
