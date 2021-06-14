@@ -9,6 +9,7 @@
   - [223. Rectangle Area](#223-rectangle-area)
   - [274. H-Index](#274-h-index)
   - [328. Odd Even Linked List](#328-odd-even-linked-list)
+  - [no. 725](#no-725)
 
 ### no. Template
 题目来源：[leetcode]()
@@ -323,5 +324,73 @@ class Solution:
             # 最后一个偶数节点的下一个节点为第一个奇数节点
             even_current.next = odd_init
         return head
+```
+</details>
+
+### no. 725
+题目来源：[leetcode](https://leetcode.com/problems/split-linked-list-in-parts/)
+
+> 题目简述：将一个链表按顺序分成 k 个子链表，链表长度相差不超过 1，后一个链表的长度不大于前一个链表的长度，不足则用空链表补齐。
+
+解题思路：
+- 只需确定每个子链表的长度，最小长度为 len(ListNoe) // k，有 len(ListNode) % k 个链表的长度需要 +1
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+
+
+def length(head):
+    # 计算链表长度
+    size = 0
+    while head is not None:
+        head = head.next
+        size += 1
+    return size
+
+
+def slice(head, k):
+    # 给定链表，将其切分成两部分，第一部分长度为 k
+    # 只包含两种情况，一种是链表为空，另一种链表长度不小于 k
+    if head is None:
+        return None, head
+    else:
+        ret = head
+        for i in range(k):
+            if i == (k - 1):
+                tail = head.next
+                head.next = None
+                head = tail
+            else:
+                head = head.next
+        return ret, head
+
+
+class Solution:
+    def splitListToParts(self, head: ListNode, k: int) -> List[ListNode]:
+        size = length(head)
+        # 子链表的最小长度
+        quotient = size // k
+        # 长度需要 +1 的链表个数
+        remainder = size % k
+        ret = []
+        for i in range(k):
+            if remainder > 0:
+                remainder -= 1
+                piece, head = slice(head, quotient + 1)
+                ret.append(piece)
+            else:
+                piece, head = slice(head, quotient)
+                ret.append(piece)
+        return ret
+        
 ```
 </details>
