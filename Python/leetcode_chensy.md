@@ -8,6 +8,7 @@
   - [61. Rotate List](#61-rotate-list)
   - [92. Reverse Linked List II](#92-reverse-linked-list-ii)
   - [143. Reorder List](#143-reorder-list)
+  - [147. Insertion Sort List](#147-insertion-sort-list)
   - [151. Reverse Words in a String](#151-reverse-words-in-a-string)
   - [223. Rectangle Area](#223-rectangle-area)
   - [274. H-Index](#274-h-index)
@@ -311,6 +312,59 @@ class Solution:
                 ls[quotient - 1].next = ls[quotient + 1]
                 ls[quotient + 1].next = ls[quotient]
             ls[quotient].next = None
+```
+</details>
+
+### 147. Insertion Sort List
+题目来源：[leetcode](https://leetcode.com/problems/insertion-sort-list/)
+
+> 题目简述：链表的插入排序。
+
+解题思路：
+- 将链表前后分成升序和乱序两部分
+- 假设升序部分包含一个值为负无穷大的头节点和一个值为无穷大的尾节点，在升序序列中找到相邻的两个节点，使得乱序链表的第一个节点的值大小恰好介于两者之间，并插入
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def insertionSortList(self, head: ListNode) -> ListNode:
+        if head is not None:
+            # head 为升序链表的头节点，second 为乱序链表的头节点
+            second = head.next
+            head.next = None
+            
+            # 若乱序链表非空
+            while second is not None:
+                # 维护 pre_current 和 current 两个相邻节点，使得 second 或插入 pre_current 前面，或插入两者中间
+                pre_current = head
+                current = head.next
+                while current is not None:
+                    if current.val <= second.val:
+                        pre_current = current
+                        current = current.next
+                    else:
+                        break
+                tmp = second.next
+                if pre_current.val > second.val:
+                    # 若 second 的值小于 pre_current 的值，即小于升序链表的第一个节点的值，将其设为头节点
+                    second.next = pre_current
+                    head = second
+                else:
+                    # 若 second 的值不小于 pre_current 的值，则将其插入 pre_current 和 current 中间
+                    pre_current.next = second
+                    second.next = current
+                # 乱序链表的下一个节点
+                second = tmp
+        return head
 ```
 </details>
 
