@@ -5,6 +5,7 @@
   - [no. Template](#no-template)
   - [2. Add Two Numbers](#2-add-two-numbers)
   - [8. String to Integer (atoi)](#8-string-to-integer-atoi)
+  - [56. Merge Intervals](#56-merge-intervals)
   - [61. Rotate List](#61-rotate-list)
   - [92. Reverse Linked List II](#92-reverse-linked-list-ii)
   - [143. Reorder List](#143-reorder-list)
@@ -13,6 +14,7 @@
   - [223. Rectangle Area](#223-rectangle-area)
   - [274. H-Index](#274-h-index)
   - [328. Odd Even Linked List](#328-odd-even-linked-list)
+  - [707. Design Linked List](#707-design-linked-list)
   - [725. Split Linked List in Parts](#725-split-linked-list-in-parts)
   - [970. Powerful Integers](#970-powerful-integers)
   - [986. Interval List Intersections](#986-interval-list-intersections)
@@ -121,6 +123,39 @@ class Solution:
         ret = lower if ret < lower else ret
         ret = upper if ret > upper else ret
         return ret
+```
+</details>
+
+### 56. Merge Intervals
+题目来源：[leetcode](https://leetcode.com/problems/merge-intervals/)
+
+> 题目简述：给定一组区间，合并有交集的区间。
+
+解题思路：
+- 将区间按左端点升序排序，遍历区间进行合并
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+class Solution:
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        rets = []
+        # 按区间左端点升序排序
+        intervals = sorted(intervals, key=lambda x: x[0])
+        last = intervals.pop(0)
+        while len(intervals) > 0:
+            current = intervals.pop(0)
+            if last[1] >= current[0]:
+                if last[1] < current[1]:
+                    last[1] = current[1]
+            else:
+                rets.append(last)
+                last = current
+        rets.append(last)
+        return rets
 ```
 </details>
 
@@ -507,6 +542,111 @@ class Solution:
             # 最后一个偶数节点的下一个节点为第一个奇数节点
             even_current.next = odd_init
         return head
+```
+</details>
+
+### 707. Design Linked List
+题目来源：[leetcode](https://leetcode.com/problems/design-linked-list/)
+
+> 题目简述：实现链表的基本操作，链表头部增加节点，链表尾部增加节点，按下标查询、增加、删除节点。
+
+解题思路：
+- 自定义节点类
+- 维护链表长度，按下标查询时做预筛选
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+class Node:
+    def __init__(self, val=None, pointer=None):
+        self.val = val
+        self.next = pointer
+
+
+class MyLinkedList:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.head = Node()
+        self.size = -1
+
+    def get(self, index: int) -> int:
+        """
+        Get the value of the index-th node in the linked list. If the index is invalid, return -1.
+        """
+        if index <= self.size:
+            current = self.head
+            count = -1
+            while count < index:
+                current = current.next
+                if current is None:
+                    break
+                count += 1
+            return current.val
+        else:
+            return -1
+        
+    def addAtHead(self, val: int) -> None:
+        """
+        Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list.
+        """
+        node = Node(val, self.head.next)
+        self.head.next = node
+        self.size += 1
+
+    def addAtTail(self, val: int) -> None:
+        """
+        Append a node of value val to the last element of the linked list.
+        """
+        node = Node(val)
+        prev = self.head
+        current = prev.next
+        while current is not None:
+            prev = current
+            current = prev.next
+        prev.next = node
+        self.size += 1
+
+    def addAtIndex(self, index: int, val: int) -> None:
+        """
+        Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted.
+        """
+        index -= 1
+        if index <= self.size:
+            current = self.head
+            count = -1
+            while count < index:
+                current = current.next
+                count += 1
+            current.next = Node(val, current.next)
+            self.size += 1
+
+    def deleteAtIndex(self, index: int) -> None:
+        """
+        Delete the index-th node in the linked list, if the index is valid.
+        """
+        if index <= self.size:
+            index -= 1
+            current = self.head
+            count = -1
+            while count < index:
+                current = current.next
+                count += 1
+            current.next = current.next.next
+            self.size -= 1
+
+# Your MyLinkedList object will be instantiated and called as such:
+# obj = MyLinkedList()
+# param_1 = obj.get(index)
+# obj.addAtHead(val)
+# obj.addAtTail(val)
+# obj.addAtIndex(index,val)
+# obj.deleteAtIndex(index)
 ```
 </details>
 
