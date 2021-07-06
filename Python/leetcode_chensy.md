@@ -14,6 +14,7 @@
   - [223. Rectangle Area](#223-rectangle-area)
   - [274. H-Index](#274-h-index)
   - [328. Odd Even Linked List](#328-odd-even-linked-list)
+  - [539. Minimum Time Difference](#539-minimum-time-difference)
   - [707. Design Linked List](#707-design-linked-list)
   - [725. Split Linked List in Parts](#725-split-linked-list-in-parts)
   - [970. Powerful Integers](#970-powerful-integers)
@@ -542,6 +543,37 @@ class Solution:
             # 最后一个偶数节点的下一个节点为第一个奇数节点
             even_current.next = odd_init
         return head
+```
+</details>
+
+### 539. Minimum Time Difference
+题目来源：[leetcode](https://leetcode.com/problems/minimum-time-difference/)
+
+> 题目简述：给定一组时刻，计算时刻间的最小差值。
+
+解题思路：
+- 先将时刻排序，则最小间隔在相邻时刻间产生，由于周期性，包括首时刻和尾时刻的间隔，主要时间花在排序。
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+def time_diff(t1, t2):
+    delta = abs(t1 - t2)
+    delta = min(delta, 24 * 60 - delta)
+    return delta
+
+
+class Solution:
+    def findMinDifference(self, timePoints: List[str]) -> int:
+        digits = [[int(i) for i in s.split(':')] for s in timePoints]
+        digits = [h * 60 + m for h, m in digits]
+        digits = sorted(digits)
+        size = len(digits)
+        deltas = [time_diff(digits[i], digits[i + 1]) for i in range(size - 1)] + [time_diff(digits[size - 1], digits[0])]
+        return min(deltas)
 ```
 </details>
 
