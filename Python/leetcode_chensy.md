@@ -14,6 +14,7 @@
   - [223. Rectangle Area](#223-rectangle-area)
   - [274. H-Index](#274-h-index)
   - [328. Odd Even Linked List](#328-odd-even-linked-list)
+  - [341. Flatten Nested List Iterator](#341-flatten-nested-list-iterator)
   - [539. Minimum Time Difference](#539-minimum-time-difference)
   - [707. Design Linked List](#707-design-linked-list)
   - [725. Split Linked List in Parts](#725-split-linked-list-in-parts)
@@ -543,6 +544,69 @@ class Solution:
             # 最后一个偶数节点的下一个节点为第一个奇数节点
             even_current.next = odd_init
         return head
+```
+</details>
+
+### 341. Flatten Nested List Iterator
+题目来源：[leetcode](https://leetcode.com/problems/flatten-nested-list-iterator/)
+
+> 题目简述：解压 nested list。
+
+解题思路：（没想到先用递归解压，答案参考 [vivek1mishra
+](https://leetcode.com/problems/flatten-nested-list-iterator/discuss/1311685/My-very-simple-solution-in-Python) 的做法）
+- 用递归把 nested list 解压
+- 遍历解压后的列表，每访问一个元素后将其删除
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+# """
+# This is the interface that allows for creating nested lists.
+# You should not implement it, or speculate about its implementation
+# """
+#class NestedInteger:
+#    def isInteger(self) -> bool:
+#        """
+#        @return True if this NestedInteger holds a single integer, rather than a nested list.
+#        """
+#
+#    def getInteger(self) -> int:
+#        """
+#        @return the single integer that this NestedInteger holds, if it holds a single integer
+#        Return None if this NestedInteger holds a nested list
+#        """
+#
+#    def getList(self) -> [NestedInteger]:
+#        """
+#        @return the nested list that this NestedInteger holds, if it holds a nested list
+#        Return None if this NestedInteger holds a single integer
+#        """
+
+class NestedIterator:
+    def __init__(self, nestedList: [NestedInteger]):
+        self.ls = []
+        self.flatten(nestedList)
+        
+    def flatten(self, ls):
+        # 递归解压 nested list
+        for i in ls:
+            if i.isInteger():
+                self.ls.append(i.getInteger())
+            else:
+                self.flatten(i.getList())
+    
+    def next(self) -> int:
+        return self.ls.pop(0)
+    
+    def hasNext(self) -> bool:
+        return len(self.ls) > 0
+
+# Your NestedIterator object will be instantiated and called as such:
+# i, v = NestedIterator(nestedList), []
+# while i.hasNext(): v.append(i.next())
 ```
 </details>
 
