@@ -15,6 +15,7 @@
   - [274. H-Index](#274-h-index)
   - [328. Odd Even Linked List](#328-odd-even-linked-list)
   - [341. Flatten Nested List Iterator](#341-flatten-nested-list-iterator)
+  - [430. Flatten a Multilevel Doubly Linked List](#430-flatten-a-multilevel-doubly-linked-list)
   - [539. Minimum Time Difference](#539-minimum-time-difference)
   - [707. Design Linked List](#707-design-linked-list)
   - [725. Split Linked List in Parts](#725-split-linked-list-in-parts)
@@ -607,6 +608,63 @@ class NestedIterator:
 # Your NestedIterator object will be instantiated and called as such:
 # i, v = NestedIterator(nestedList), []
 # while i.hasNext(): v.append(i.next())
+```
+</details>
+
+### 430. Flatten a Multilevel Doubly Linked List
+题目来源：[leetcode](https://leetcode.com/problems/flatten-a-multilevel-doubly-linked-list/)
+
+> 题目简述：双链表的每个节点允许有一个孩子节点，以深度优先的方式展平双链表。
+
+解题思路：
+- 递归求解，先展平 child 节点连接的子链表，再展平 next 节点连接的子链表，最后将当前节点、child 节点连接的子链表、next 节点连接的子链表拼接，并将当前节点的 child 节点置空。
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, val, prev, next, child):
+        self.val = val
+        self.prev = prev
+        self.next = next
+        self.child = child
+"""
+
+class Solution:
+    def head_and_tail(self, head):
+        current = head
+        tail = None
+        if current is not None:
+            while current.child is None and current.next is not None:
+                current = current.next
+            tail = current
+            child_tail = None
+            child_head = None
+            # 若孩子节点非空，展平其对应的子链表，返回头节点和尾节点
+            if current.child is not None:
+                child_head, child_tail = self.head_and_tail(current.child)
+                tail = child_tail
+            # 若非尾节点，展平子链表，并将头节点接上 child 的尾节点
+            if current.next is not None:
+                next_head, next_tail = self.head_and_tail(current.next)
+                next_head.prev = child_tail
+                child_tail.next = next_head
+                tail = next_tail
+            # 将 child 的头节点接上当前节点，并将当前节点的 child 节点置空
+            if current.child is not None:
+                current.next = child_head
+                child_head.prev = current
+                current.child = None
+        return head, tail
+        
+    def flatten(self, head: 'Node') -> 'Node':
+        ret, _= self.head_and_tail(head)
+        return ret
 ```
 </details>
 
