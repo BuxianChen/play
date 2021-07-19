@@ -8,6 +8,7 @@
   - [56. Merge Intervals](#56-merge-intervals)
   - [61. Rotate List](#61-rotate-list)
   - [92. Reverse Linked List II](#92-reverse-linked-list-ii)
+  - [114. Flatten Binary Tree to Linked List](#114-flatten-binary-tree-to-linked-list)
   - [143. Reorder List](#143-reorder-list)
   - [147. Insertion Sort List](#147-insertion-sort-list)
   - [151. Reverse Words in a String](#151-reverse-words-in-a-string)
@@ -304,6 +305,58 @@ class Solution:
             reverse_list(ls)
             ls[0].next = None
             return ls[-1]
+```
+</details>
+
+### 114. Flatten Binary Tree to Linked List
+题目来源：[leetcode](https://leetcode.com/problems/flatten-binary-tree-to-linked-list/)
+
+> 题目简述：把二叉树用前序遍历转为链表。
+
+解题思路：
+- 递归求解，分别展平左子树和右子树，将根节点的右孩子指向左子树，左子树的尾节点指向右子树，并将根节点的左孩子指向空
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+ Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def my_flatten(self, root):
+        if root is None:
+            return None
+        else:
+            left = root.left
+            right = root.right
+            if left:
+                left_tail = self.my_flatten(left)
+                root.left = None
+                if right:
+                    right_tail = self.my_flatten(right)
+                    root.right = left
+                    left_tail.right = right
+                    return right_tail
+                else:
+                    root.right = left
+                    return left_tail
+            elif right:
+                right_tail = self.my_flatten(right)
+                return right_tail
+            else:
+                return root
+    
+    def flatten(self, root: TreeNode) -> None:
+        """
+        Do not return anything, modify root in-place instead.
+        """
+        _ = self.my_flatten(root)
 ```
 </details>
 
