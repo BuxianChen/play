@@ -5,6 +5,7 @@
   - [no. Template](#no-template)
   - [2. Add Two Numbers](#2-add-two-numbers)
   - [8. String to Integer (atoi)](#8-string-to-integer-atoi)
+  - [24. Swap Nodes in Pairs](#24-swap-nodes-in-pairs)
   - [56. Merge Intervals](#56-merge-intervals)
   - [61. Rotate List](#61-rotate-list)
   - [92. Reverse Linked List II](#92-reverse-linked-list-ii)
@@ -127,6 +128,38 @@ class Solution:
         ret = lower if ret < lower else ret
         ret = upper if ret > upper else ret
         return ret
+```
+</details>
+
+### 24. Swap Nodes in Pairs
+题目来源：[leetcode](https://leetcode.com/problems/swap-nodes-in-pairs/)
+
+> 题目简述：将链表节点顺次两两分组，交互组内节点间的次序。
+
+解题思路：
+- 递归求解，假设除了前两个节点外，剩余节点已完成换序，则只需交换前两个节点的次序
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def swapPairs(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if head is not None:
+            first = head.next
+            if first is not None:
+                second = self.swapPairs(first.next)
+                first.next =  head
+                head.next = second
+                head = first
+        return head
 ```
 </details>
 
