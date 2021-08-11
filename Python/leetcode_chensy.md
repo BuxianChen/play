@@ -8,8 +8,10 @@
   - [24. Swap Nodes in Pairs](#24-swap-nodes-in-pairs)
   - [56. Merge Intervals](#56-merge-intervals)
   - [61. Rotate List](#61-rotate-list)
+  - [82. Remove Duplicates from Sorted List II](#82-remove-duplicates-from-sorted-list-ii)
   - [92. Reverse Linked List II](#92-reverse-linked-list-ii)
   - [114. Flatten Binary Tree to Linked List](#114-flatten-binary-tree-to-linked-list)
+  - [133. Clone Graph](#133-clone-graph)
   - [143. Reorder List](#143-reorder-list)
   - [147. Insertion Sort List](#147-insertion-sort-list)
   - [151. Reverse Words in a String](#151-reverse-words-in-a-string)
@@ -264,6 +266,46 @@ class Solution:
 ```
 </details>
 
+### 82. Remove Duplicates from Sorted List II
+题目来源：[leetcode](https://leetcode.com/problems/remove-duplicates-from-sorted-list-ii/)
+
+> 题目简述：在一个升序链表中，删除出现次数超过 1 次的元素。
+
+解题思路：
+- 递归求解，化归为重复元素出现在链表头部的情形，只需将头节点换为第一个与重复元素不等的元素
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if head is not None:
+            current = head
+            if current.next is not None:
+                current = current.next
+                # 若在链表头部出现重复
+                if current.val == head.val:
+                    while current.next is not None:
+                        current = current.next
+                        if current.val != head.val:
+                            break
+                    else:
+                        current = current.next
+                    head = self.deleteDuplicates(current)
+                else:
+                    head.next = self.deleteDuplicates(current)
+        return head
+```
+</details>
+
 ### 92. Reverse Linked List II
 题目来源：[leetcode](https://leetcode.com/problems/reverse-linked-list-ii/)
 
@@ -390,6 +432,42 @@ class Solution:
         Do not return anything, modify root in-place instead.
         """
         _ = self.my_flatten(root)
+```
+</details>
+
+### 133. Clone Graph
+题目来源：[leetcode](https://leetcode.com/problems/clone-graph/)
+
+> 题目简述：深复制一个以邻接链表形式存储的 graph，节点的值可以作为 id。
+
+解题思路：
+- 递归求解，用一个字典存储已经访问过的节点，若一个节点已访问，则返回复制节点，若未访问，则新建一个拷贝，并对其邻居递归拷贝
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, val = 0, neighbors = None):
+        self.val = val
+        self.neighbors = neighbors if neighbors is not None else []
+"""
+class Solution:
+    def __init__(self):
+        # 记录已访问节点
+        self.nodes = {}
+        
+    def cloneGraph(self, node: 'Node') -> 'Node':
+        if node is not None:
+            if self.nodes.get(node.val) is None:
+                self.nodes[node.val] = Node(node.val)
+                self.nodes[node.val].neighbors = [] if node.neighbors is None else [self.cloneGraph(v) for v in node.neighbors]
+            node = self.nodes[node.val]
+        return node
 ```
 </details>
 
