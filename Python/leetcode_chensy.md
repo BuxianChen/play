@@ -10,6 +10,7 @@
   - [61. Rotate List](#61-rotate-list)
   - [82. Remove Duplicates from Sorted List II](#82-remove-duplicates-from-sorted-list-ii)
   - [92. Reverse Linked List II](#92-reverse-linked-list-ii)
+  - [109. Convert Sorted List to Binary Search Tree](#109-convert-sorted-list-to-binary-search-tree)
   - [114. Flatten Binary Tree to Linked List](#114-flatten-binary-tree-to-linked-list)
   - [133. Clone Graph](#133-clone-graph)
   - [143. Reorder List](#143-reorder-list)
@@ -380,6 +381,62 @@ class Solution:
             reverse_list(ls)
             ls[0].next = None
             return ls[-1]
+```
+</details>
+
+### 109. Convert Sorted List to Binary Search Tree
+题目来源：[leetcode](https://leetcode.com/problems/convert-sorted-list-to-binary-search-tree/)
+
+> 题目简述：把一个升序链表转为二叉搜索树。
+
+解题思路：
+- 先将链表转为数组/列表，再用二分法递归地将数组转为二叉搜索树
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+def tree(ls):
+    size = len(ls)
+    if size > 0:
+        if size == 1:
+            root = TreeNode(ls[0])
+        else:
+            mid = size // 2
+            root = TreeNode(ls[mid], tree(ls[:mid]), tree(ls[mid + 1:]))
+    else:
+        root = None
+    return root
+
+
+def link2list(head):
+    ls = []
+    while head is not None:
+        ls.append(head.val)
+        head = head.next
+    return ls
+
+
+class Solution:
+    def sortedListToBST(self, head: Optional[ListNode]) -> Optional[TreeNode]:
+        # 把链表转为数组/列表
+        ls = link2list(head)
+        # 递归地将数组转为二叉搜索树
+        root = tree(ls)
+        return root
 ```
 </details>
 
