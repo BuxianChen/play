@@ -13,6 +13,7 @@
   - [109. Convert Sorted List to Binary Search Tree](#109-convert-sorted-list-to-binary-search-tree)
   - [114. Flatten Binary Tree to Linked List](#114-flatten-binary-tree-to-linked-list)
   - [133. Clone Graph](#133-clone-graph)
+  - [142. Linked List Cycle II](#142-linked-list-cycle-ii)
   - [143. Reorder List](#143-reorder-list)
   - [147. Insertion Sort List](#147-insertion-sort-list)
   - [151. Reverse Words in a String](#151-reverse-words-in-a-string)
@@ -20,10 +21,12 @@
   - [274. H-Index](#274-h-index)
   - [328. Odd Even Linked List](#328-odd-even-linked-list)
   - [341. Flatten Nested List Iterator](#341-flatten-nested-list-iterator)
+  - [382. Linked List Random Node](#382-linked-list-random-node)
   - [430. Flatten a Multilevel Doubly Linked List](#430-flatten-a-multilevel-doubly-linked-list)
   - [539. Minimum Time Difference](#539-minimum-time-difference)
   - [707. Design Linked List](#707-design-linked-list)
   - [725. Split Linked List in Parts](#725-split-linked-list-in-parts)
+  - [817. Linked List Components](#817-linked-list-components)
   - [970. Powerful Integers](#970-powerful-integers)
   - [986. Interval List Intersections](#986-interval-list-intersections)
   - [1721. Swapping Nodes in a Linked List](#1721-swapping-nodes-in-a-linked-list)
@@ -528,6 +531,41 @@ class Solution:
 ```
 </details>
 
+### 142. Linked List Cycle II
+题目来源：[leetcode](https://leetcode.com/problems/linked-list-cycle-ii/)
+
+> 题目简述：给定一个链表，至多存在一个环（cycle），返回环的起始节点（同时也是终止节点）。
+
+解题思路：
+- 用 python 中的 `id()` 函数记录每个节点的 id，当一个 id 被二次访问时，说明找到了起始节点/终止节点 
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def detectCycle(self, head: ListNode) -> ListNode:
+        ids = set()
+        while head is not None:
+            id_cur = id(head)
+            if id_cur in ids:
+                return head
+            else:
+                ids.add(id_cur)
+                head = head.next
+        else:
+            return head
+```
+</details>
+
 ### 143. Reorder List
 题目来源：[leetcode](https://leetcode.com/problems/reorder-list/)
 
@@ -832,6 +870,64 @@ class NestedIterator:
 ```
 </details>
 
+### 382. Linked List Random Node
+题目来源：[leetcode](https://leetcode.com/problems/linked-list-random-node/)
+
+> 题目简述：给定链表，返回随即元素。
+
+解题思路：
+- 获取链表长度
+- 在长度范围内生成随机下标，返回对应下标的链表元素
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+from random import randint
+
+
+def length(head):
+    size = 0
+    while head is not None:
+        head = head.next
+        size += 1
+    return size
+
+
+class Solution:
+
+    def __init__(self, head: Optional[ListNode]):
+        """
+        @param head The linked list's head.
+        Note that the head is guaranteed to be not null, so it contains at least one node.
+        """
+        self.head = head
+        self.size = length(head)
+
+    def getRandom(self) -> int:
+        """
+        Returns a random node's value.
+        """
+        i = randint(0, self.size - 1)
+        j = 0
+        current = self.head
+        while j < i:
+            current = current.next
+            j += 1
+        return current.val
+# Your Solution object will be instantiated and called as such:
+# obj = Solution(head)
+# param_1 = obj.getRandom()
+```
+</details>
+
 ### 430. Flatten a Multilevel Doubly Linked List
 题目来源：[leetcode](https://leetcode.com/problems/flatten-a-multilevel-doubly-linked-list/)
 
@@ -1090,6 +1186,45 @@ class Solution:
                 ret.append(piece)
         return ret
         
+```
+</details>
+
+### 817. Linked List Components
+题目来源：[leetcode](https://leetcode.com/problems/linked-list-components/)
+
+> 题目简述：给定链表中的若干个节点，将其划分为不同的连通分支，返回分支数。
+
+解题思路：
+- 遍历链表，若某个节点出现在给定节点集合中，将该节点从集合中移除，并判断
+  - 如果该节点是最后一个分支的最后一个节点的后继节点，则将其加入该分支
+  - 否则新建分支
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def numComponents(self, head: Optional[ListNode], nums: List[int]) -> int:
+        components = []
+        prev = None
+        while head is not None and len(nums) > 0:
+            if head.val in nums:
+                nums.remove(head.val)
+                # 若节点为上一个分支的最后一个节点的后继节点，则加入该分支，否则新建分支
+                if len(components) > 0 and prev == components[-1][-1]:
+                    components[-1].append(head.val)
+                else:
+                    components.append([head.val])
+            prev = head.val
+            head = head.next
+        return len(components)
 ```
 </details>
 
