@@ -9,6 +9,7 @@
   - [56. Merge Intervals](#56-merge-intervals)
   - [61. Rotate List](#61-rotate-list)
   - [82. Remove Duplicates from Sorted List II](#82-remove-duplicates-from-sorted-list-ii)
+  - [86. Partition List](#86-partition-list)
   - [92. Reverse Linked List II](#92-reverse-linked-list-ii)
   - [109. Convert Sorted List to Binary Search Tree](#109-convert-sorted-list-to-binary-search-tree)
   - [114. Flatten Binary Tree to Linked List](#114-flatten-binary-tree-to-linked-list)
@@ -306,6 +307,58 @@ class Solution:
                     head = self.deleteDuplicates(current)
                 else:
                     head.next = self.deleteDuplicates(current)
+        return head
+```
+</details>
+
+### 86. Partition List
+题目来源：[leetcode](https://leetcode.com/problems/partition-list/)
+
+> 题目简述：给定链表和一个阈值，将链表划分成左右两部分，左边值小于阈值，右边的值大于或等于阈值，左右两边内部节点间的相对顺序与原链表一致。
+
+解题思路：
+- 插入排序的插入步骤，只需分别维护左链表和右链表，使得左链表节点的值小于给定阈值，剩余节点放在右链表，最后将两个链表拼接
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def partition(self, head: ListNode, x: int) -> ListNode:
+        head_small = None
+        tail_small = None
+        head_large = None
+        tail_large = None
+        while head is not None:
+            if head.val < x:
+                if tail_small is None:
+                    tail_small = head
+                    head_small = head
+                else:
+                    tail_small.next = head
+                    tail_small = head
+            else:
+                if head_large is None:
+                    head_large = head
+                    tail_large = head
+                else:
+                    tail_large.next = head
+                    tail_large = head
+            head = head.next
+        if tail_small is not None:
+            tail_small.next = head_large
+            head = head_small  
+        else:
+            head = head_large  
+        if tail_large is not None:
+            tail_large.next = None
         return head
 ```
 </details>
