@@ -14,6 +14,7 @@
   - [109. Convert Sorted List to Binary Search Tree](#109-convert-sorted-list-to-binary-search-tree)
   - [114. Flatten Binary Tree to Linked List](#114-flatten-binary-tree-to-linked-list)
   - [133. Clone Graph](#133-clone-graph)
+  - [138. Copy List with Random Pointer](#138-copy-list-with-random-pointer)
   - [142. Linked List Cycle II](#142-linked-list-cycle-ii)
   - [143. Reorder List](#143-reorder-list)
   - [147. Insertion Sort List](#147-insertion-sort-list)
@@ -23,6 +24,7 @@
   - [328. Odd Even Linked List](#328-odd-even-linked-list)
   - [341. Flatten Nested List Iterator](#341-flatten-nested-list-iterator)
   - [382. Linked List Random Node](#382-linked-list-random-node)
+  - [385. Mini Parser](#385-mini-parser)
   - [430. Flatten a Multilevel Doubly Linked List](#430-flatten-a-multilevel-doubly-linked-list)
   - [539. Minimum Time Difference](#539-minimum-time-difference)
   - [707. Design Linked List](#707-design-linked-list)
@@ -584,6 +586,46 @@ class Solution:
 ```
 </details>
 
+### 138. Copy List with Random Pointer
+题目来源：[leetcode](https://leetcode.com/problems/copy-list-with-random-pointer/)
+
+> 题目简述：深复制链表，该链表的每个节点有个指针指向链表中的随机节点或空。
+
+解题思路：
+- 由于指针指向的不确定性，引入额外的变量存放已经访问的节点，用递归的方式深复制当前节点及其后继节点和随机指向的节点。
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, x: int, next: 'Node' = None, random: 'Node' = None):
+        self.val = int(x)
+        self.next = next
+        self.random = random
+"""
+
+class Solution:
+    def __init__(self):
+        self.visited = {}
+        
+    def copyRandomList(self, head: 'Node') -> 'Node':
+        if head is not None:
+            id_cur = id(head)
+            if self.visited.get(id_cur) is None:
+                node = Node(head.val)
+                self.visited[id_cur] = node
+                self.visited[id_cur].next = self.copyRandomList(head.next)
+                self.visited[id_cur].random = self.copyRandomList(head.random)
+            head = self.visited[id_cur]
+        return head
+```
+</details>
+
 ### 142. Linked List Cycle II
 题目来源：[leetcode](https://leetcode.com/problems/linked-list-cycle-ii/)
 
@@ -978,6 +1020,82 @@ class Solution:
 # Your Solution object will be instantiated and called as such:
 # obj = Solution(head)
 # param_1 = obj.getRandom()
+```
+</details>
+
+### 385. Mini Parser
+题目来源：[leetcode](https://leetcode.com/problems/mini-parser/)
+
+> 题目简述：将字符串转为一个 nested integer。
+
+解题思路：
+- 采用取巧的方法，先用 `eval` 函数把字符串转为列表，然后使用递归构造
+  - 若当前元素为整数，则直接将当前 NestedInteger 的值设为该整数
+  - 否则为列表，遍历列表，构建 NestedInteger，用列表的每个元素构造 NestedInteger 的每个元素
+- 因为使用了 `eval` 函数，所以相当于遍历了一次字符串，又生成了一个列表，所以内存占用增大，耗时增加
+
+<details>
+<summary>
+成功代码：
+</summary>
+
+```python
+# """
+# This is the interface that allows for creating nested lists.
+# You should not implement it, or speculate about its implementation
+# """
+#class NestedInteger:
+#    def __init__(self, value=None):
+#        """
+#        If value is not specified, initializes an empty list.
+#        Otherwise initializes a single integer equal to value.
+#        """
+#
+#    def isInteger(self):
+#        """
+#        @return True if this NestedInteger holds a single integer, rather than a nested list.
+#        :rtype bool
+#        """
+#
+#    def add(self, elem):
+#        """
+#        Set this NestedInteger to hold a nested list and adds a nested integer elem to it.
+#        :rtype void
+#        """
+#
+#    def setInteger(self, value):
+#        """
+#        Set this NestedInteger to hold a single integer equal to value.
+#        :rtype void
+#        """
+#
+#    def getInteger(self):
+#        """
+#        @return the single integer that this NestedInteger holds, if it holds a single integer
+#        Return None if this NestedInteger holds a nested list
+#        :rtype int
+#        """
+#
+#    def getList(self):
+#        """
+#        @return the nested list that this NestedInteger holds, if it holds a nested list
+#        Return None if this NestedInteger holds a single integer
+#        :rtype List[NestedInteger]
+#        """
+
+class Solution:
+    def deserialize(self, s: str) -> NestedInteger:
+        ls = eval(s)
+        return self.ls2nested(ls)
+        
+    def ls2nested(self, ls):
+        n = NestedInteger()
+        if isinstance(ls, list):
+            for i in ls:
+                n.add(self.ls2nested(i))
+        else:
+            n.setInteger(ls)
+        return n
 ```
 </details>
 
